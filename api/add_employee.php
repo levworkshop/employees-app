@@ -37,7 +37,7 @@ try {
 
     $sql =
         "INSERT INTO employees.workers(`firstName`, `lastName`, `address`, `cityId`, `active`) " .
-        "VALUES('$firstName', '$lastName', '$address', $cityId, '$active')";
+        "VALUES('$firstName', '$lastName', '$address', $cityId, $active)";
 
     $result = runQuery($sql);
 
