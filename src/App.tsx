@@ -8,6 +8,7 @@ function App() {
         <Routes>
             <Route path="/" element={<Employees />} />
             <Route path="/details" element={<Details />} />
+            <Route path="/details/:id" element={<Details />} />
         </Routes>
     );
 }

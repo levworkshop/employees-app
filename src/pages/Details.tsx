@@ -1,10 +1,11 @@
 import Joi from "joi";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ICity } from "./types";
 
 function Details() {
     const navigate = useNavigate();
+    const { id } = useParams();
     const [cities, setCities] = useState<Array<ICity>>([]);
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
@@ -19,6 +20,20 @@ function Details() {
             .then(json => {
                 setCities(json);
                 setCityId(json[0].id)
+            })
+
+        if (!id) return;
+
+        fetch(`http://localhost/employees-app/api/get_emp1.php?id=${id}`)
+            .then(res => res.json())
+            .then(json => {
+                const data = json[0];
+
+                setFirstName(data.firstName);
+                setLastName(data.lastName);
+                setAddress(data.address);
+                setCityId(data.cityId);
+                setActive(data.active);
             })
     }, []);
 

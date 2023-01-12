@@ -15,12 +15,8 @@ function Employees() {
     }, []);
 
     function handleDelete(id: number) {
-        fetch('http://localhost/employees-app/api/del_employee.php', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id })
+        fetch(`http://localhost/employees-app/api/del_employee.php?id=${id}`, {
+            method: 'DELETE'
         })
             .then(res => res.json())
             .then(json => {
@@ -67,7 +63,11 @@ function Employees() {
                 <tbody>
                     {employees.map(employee =>
                         <tr key={employee.id}>
-                            <td>{employee.id}</td>
+                            <td>
+                                <Link to={`/details/${employee.id}`}>
+                                    {employee.id}
+                                </Link>
+                            </td>
                             <td>{employee.firstName}</td>
                             <td>{employee.lastName}</td>
                             <td>{employee.address}, {employee.cityId}</td>
