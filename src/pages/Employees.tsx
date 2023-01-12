@@ -4,6 +4,7 @@ import { IEmployee } from "./types";
 
 function Employees() {
     const [employees, setEmployees] = useState<Array<IEmployee>>([]);
+    const [error, setError] = useState<string>('');
 
     useEffect(() => {
         fetch('http://localhost/employees-app/api/get_employees.php')
@@ -12,6 +13,28 @@ function Employees() {
                 setEmployees(json);
             })
     }, []);
+
+    function handleDelete(id: number) {
+        fetch('http://localhost/employees-app/api/del_employee.php', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id })
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.ok) {
+                    const updated = [...employees].filter(
+                        employee => employee.id !== id
+                    )
+                    setEmployees(updated);
+                }
+                else {
+                    setError(`Failed to delete employee. ${json.error}`);
+                }
+            })
+    }
 
     return (
         <>
@@ -23,6 +46,12 @@ function Employees() {
                     Add Employee
                 </Link>
             </div>
+
+            {error &&
+                <div className="text-danger">
+                    {error}
+                </div>
+            }
 
             <table className="table">
                 <thead>
@@ -45,6 +74,7 @@ function Employees() {
                             <td>{employee.active}</td>
                             <td>
                                 <button
+                                    onClick={() => handleDelete(employee.id)}
                                     className="btn btn-default"
                                 >
                                     <i className="bi-trash" />
