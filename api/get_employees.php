@@ -1,15 +1,19 @@
 <?php
 
 require_once "./headers.php";
+require_once "./database.php";
+
+setHeaders();
 
 try {
-    $db_conn = mysqli_connect('localhost', 'root', 'password', 'employees');
     $sql = "SELECT * FROM workers";
-    $result = mysqli_query($db_conn, $sql);
+    $result = selectRecords($sql);
 
-    setHeaders();
     echo json_encode($result);
 
 } catch (Exception $err) {
-    echo "Error: " . $err->getMessage();
+    echo json_encode([
+        "ok" => false,
+        "error" => $err->getMessage()
+    ]);
 }
