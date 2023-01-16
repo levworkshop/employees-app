@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ICity } from "./types";
+import { ICity, IEmployee } from "./types";
 
 function Details() {
     const navigate = useNavigate();
@@ -37,6 +37,44 @@ function Details() {
             })
     }, []);
 
+    function addEmployee(data: IEmployee) {
+        fetch('http://localhost/employees-app/api/add_employee.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.ok) {
+                    navigate('/');
+                }
+                else {
+                    setError(`Failed to add employee. ${json.error}`);
+                }
+            })
+    }
+
+    function updateEmployee(data: IEmployee) {
+        fetch(`http://localhost/employees-app/api/update_employee.php?id=${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.ok) {
+                    navigate('/');
+                }
+                else {
+                    setError(`Failed to update employee. ${json.error}`);
+                }
+            })
+    }
+
     function handleSubmit() {
         const schema = Joi.object().keys({
             firstName: Joi.string().required().min(2),
@@ -55,26 +93,18 @@ function Details() {
             return;
         }
 
-        fetch('http://localhost/employees-app/api/add_employee.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                ...value,
-                cityId,
-                active
-            })
-        })
-            .then(res => res.json())
-            .then(json => {
-                if (json.ok) {
-                    navigate('/');
-                }
-                else {
-                    setError(`Failed to add employee. ${json.error}`);
-                }
-            })
+        const data = {
+            ...value,
+            cityId,
+            active
+        }
+
+        if (!id) {
+            addEmployee(data);
+        }
+        else {
+            updateEmployee(data);
+        }
     }
 
     return (

@@ -7,27 +7,17 @@ setHeaders();
 
 try {
 
-    if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
-        throw new Exception("bad request");
+    if (!isset($_REQUEST['id'])) {
+        throw new Exception("bad input");
     }
 
-    $json = file_get_contents(
-        "php://input",
-        false,
-        stream_context_get_default(),
-        0,
-        $_SERVER["CONTENT_LENGTH"]
-    );
-
-    $data = json_decode($json, true);
-
-    $id = $data["id"];
+    $id = filter_input(INPUT_GET, 'id', FILTER_UNSAFE_RAW);
 
     if (!isset($id) || empty($id)) {
         throw new Exception("bad input");
     }
 
-    $sql = "DELETE FROM employees.workers WHERE id=$id";
+    $sql = "DELETE FROM workers WHERE `workers`.`id`=$id";
     $result = runQuery($sql);
 
     echo json_encode([
