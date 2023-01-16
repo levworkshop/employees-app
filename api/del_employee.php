@@ -21,7 +21,7 @@ try {
     $result = runQuery($sql);
 
     echo json_encode([
-        "ok" => $result
+        "ok" => true
     ]);
 
 } catch (Exception $err) {
